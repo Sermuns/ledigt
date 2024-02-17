@@ -2,7 +2,7 @@
 <html lang="sv">
   <head>
     <title>Ledigt</title>
-    <link
+    <!-- <link
       rel="apple-touch-icon"
       sizes="180x180"
       href="media/apple-touch-icon.png"
@@ -18,7 +18,8 @@
       type="image/png"
       sizes="16x16"
       href="media/favicon-16x16.png"
-    />
+    /> -->
+    <link rel="icon" type="image/x-icon" href="media/favicon.ico" />
     <link rel="stylesheet" href="style.css" />
     <meta charset="utf-8" />
     <meta
@@ -36,6 +37,7 @@
     <meta name="author" content="Samuel Åkesson" />
     <meta name="robots" content="index, follow" />
     <meta name="googlebot" content="index, follow" />
+    <!-- <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, private"> -->
     <script src="script.js"></script>
   </head>
 
@@ -45,15 +47,14 @@
         <h1>Ledigt</h1>
       </a>
       <p class="information">Se lediga lokaler på Linköpings universitet.</p>
-      <form action="#" onchange="visuallyUpdateAllCheckbox()">
+      <form action="#" onchange="updateSelection()">
         <div id="hus-title">
-          <label class="selection-title">Hus:</label>
-          <label>
+          <label style="gap: 1rem">
             Alla
             <input type="checkbox" id="all" onchange="toggleAllCheckbox()" />
           </label>
         </div>
-        <div id="hus-selection">
+        <div id="hus-selection" onchange="visuallyUpdateAllCheckbox()">
           <label>
             A-huset
             <input type="checkbox" id="a-huset" />
@@ -77,10 +78,6 @@
           <label>
             Fysikhuset
             <input type="checkbox" id="fysikhuset" />
-          </label>
-          <label>
-            G-huset
-            <input type="checkbox" id="g-huset" />
           </label>
           <label>
             I-huset
