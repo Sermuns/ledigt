@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <title>Ledigt</title>
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="media/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="media/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="media/favicon-16x16.png"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="Sök efter lediga lokaler på Linköpings universitet."
+    />
+    <meta
+      name="keywords"
+      content="ledigt, lokal, un, un.samake.se, samake, LiU, ISY, Linköping, campus, valla, campus valla, lisam, liunet, timeedit, undervisningsnummer, kurs, grupp, Linköpings universitet"
+    />
+    <meta name="author" content="Samuel Åkesson" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <script src="script.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <a href=".">
+        <h1>Ledigt</h1>
+      </a>
+      <p class="information">Se lediga lokaler på Linköpings universitet.</p>
+      <form action="#" onchange="visuallyUpdateAllCheckbox()">
+        <div id="hus-title">
+          <label class="selection-title">Hus:</label>
+          <label>
+            Alla
+            <input type="checkbox" id="all" onchange="toggleAllCheckbox()" />
+          </label>
+        </div>
+        <div id="hus-selection">
+          <label>
+            A-huset
+            <input type="checkbox" id="a-huset" />
+          </label>
+          <label>
+            B-huset
+            <input type="checkbox" id="b-huset" />
+          </label>
+          <label>
+            C-huset
+            <input type="checkbox" id="c-huset" />
+          </label>
+          <label>
+            D-huset
+            <input type="checkbox" id="d-huset" />
+          </label>
+          <label>
+            E-huset
+            <input type="checkbox" id="e-huset" />
+          </label>
+          <label>
+            Fysikhuset
+            <input type="checkbox" id="fysikhuset" />
+          </label>
+          <label>
+            G-huset
+            <input type="checkbox" id="g-huset" />
+          </label>
+          <label>
+            I-huset
+            <input type="checkbox" id="i-huset" />
+          </label>
+          <label>
+            Key
+            <input type="checkbox" id="key" />
+          </label>
+          <label>
+            Studenthuset
+            <input type="checkbox" id="studenthuset" />
+          </label>
+          <label>
+            Tema-huset
+            <input type="checkbox" id="tema-huset" />
+          </label>
+        </div>
+      </form>
+      <div id="results"></div>
+    </div>
+    <footer class="info-box">
+      <p>
+        Du är besökare nummer
+        <accessed />
+      </p>
+      <p>
+        Sidan modifierades
+        <modified />
+      </p>
+      <a href="https://github.com/Sermuns/ledigt" target="_blank"
+        >Bidra på github!</a
+      >
+    </footer>
+  </body>
+</html>

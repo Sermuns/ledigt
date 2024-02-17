@@ -1,0 +1,232 @@
+:root {
+  --background-color: #191919;
+  --primary-color: #222;
+  --secondary-color: #2d2d2d;
+  --tertiary-color: #777;
+  --quaternary-color: #333;
+  --accent-color: yellow;
+  --text-color: white;
+  --link-color: yellow;
+  --error-color: purple;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('media/JetBrainsMono-Regular.woff2') format('woff2');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url(media/JetBrainsMono-Bold.woff2) format('woff2');
+  font-weight: bold;
+}
+
+* {
+  font-family: JetBrains Mono, monospace;
+  color: var(--text-color);
+}
+
+html {
+  background-color: var(--background-color);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#app {
+  border: 1px solid;
+  background: var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  overflow: hidden;
+  gap: 2rem;
+}
+
+.information,
+#app,
+footer {
+  border-color: var(--tertiary-color);
+  border-radius: 5px;
+}
+
+#results {
+  margin-top: 5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+button:hover,
+tr:hover {
+  background-color: var(--quaternary-color);
+}
+
+input,
+button {
+  background-color: var(--primary-color);
+  border: 1px solid var(--background-color);
+}
+
+a {
+  text-decoration: underline var(--link-color);
+  color: var(--link-color);
+}
+
+h1 {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  text-decoration-color: var(--text-color);
+}
+
+.information {
+  text-align: center;
+  border: var(--tertiary-color) 1px solid;
+  margin: 0;
+  padding: 1rem;
+}
+
+input {
+  margin: 0;
+}
+
+input:focus,
+select:focus {
+  outline: 1px solid var(--link-color);
+}
+
+form {
+  padding: 1rem;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+#hus-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.selection-title {
+  text-decoration: underline var(--link-color);
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  background-color: var(--background-color);
+}
+
+#hus-selection {
+  display: grid;
+
+  grid-template-columns: repeat(2, auto);
+  gap: 1rem 2rem;
+}
+
+#hus-selection label {
+  justify-self: right;
+}
+
+
+/* CGI script errors */
+p.error {
+  text-align: center;
+  text-decoration: underline var(--error-color);
+}
+
+p.error::before {
+  content: "Fel: ";
+  font-weight: bold;
+}
+
+p#group-not-found::after {
+  content: "Gruppen hittades inte (exempel: D2.C, EMM1, MAT1, Y2.B";
+}
+
+p#short-course::after {
+  content: "Kurskoden är för kort (minst 5 tecken)";
+}
+
+p#no-results::after {
+  content: "Inga resultat för kurs (går kursen denna termin?)";
+}
+
+/* Make sure the caret is visible only in the input fields */
+p,
+label,
+button,
+footer,
+a {
+  caret-color: transparent;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.hidden {
+  display: none;
+}
+
+button {
+  margin-top: 1rem;
+  background-color: var(--secondary-color);
+}
+
+#urlDiv {
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.info-box {
+  vertical-align: center;
+  padding: 0.3rem 1rem;
+  border: var(--tertiary-color) 1px solid;
+  margin-top: 1rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+.info-box>h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.info-box>p {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+button {
+  padding: 0.5rem;
+}
+
+#console {
+  font-size: large;
+  background-color: var(--secondary-color);
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+  #app {
+    width: 97%;
+    /* Use a percentage width for smaller screens */
+    padding: 0.5rem;
+  }
+
+  button {
+    width: 100%;
+    padding: 1rem;
+  }
+}
