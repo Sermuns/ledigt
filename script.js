@@ -5,6 +5,9 @@ function showLoading() {
     checkboxes.forEach(checkbox => checkbox.disabled = true)
     all.disabled = true
     // Start loading animation
+    const loadingElement = document.createElement("p")
+    loadingElement.style.gridColumn = "1 / -1" // span all columns
+    results.appendChild(loadingElement)
     let lineCount = 0;
     loading = setInterval(() => {
         lineCount = (lineCount + 1) % 4;
@@ -23,8 +26,8 @@ function showLoading() {
                 line = "\\";
                 break;
         }
-        results.innerHTML = `${line} Vänta lite, söker på TimeEdit ${line}`;
-    }, 200);
+        loadingElement.textContent = `${line} Vänta lite, söker på TimeEdit ${line}`;
+    }, 150);
 }
 
 function hideLoading() {
@@ -35,8 +38,8 @@ function hideLoading() {
 }
 
 /**
+ * Initialize variables and fetch the data
  * Fetch the HTML response from TimeEdit and display the results
- * Initialise variables
  */
 async function init() {
     results = document.getElementById("results")
@@ -55,6 +58,10 @@ async function init() {
     all.click()
 }
 
+/**
+ * Fetch the total rooms from the JSON file 
+ * @returns {Promise<Array>} The total rooms from the JSON file
+ */
 async function loadTotalRooms() {
     try {
         const response = await fetch("rooms.json")
@@ -65,6 +72,21 @@ async function loadTotalRooms() {
     }
 }
 
+/**
+ * Enable or disable house selections based on availability
+ */
+function disableUnavailableSelections() {
+    checkboxes.forEach(checkbox => {
+        const house = checkbox.parentElement.textContent.trim()
+        const booked = !totalRooms.some(room => room.house === house && !bookedRooms.has(room.name))
+        checkbox.disabled = booked
+        checkbox.parentElement.classList = booked ? "unavailable" : "available"
+    })
+}
+
+/**
+ * Show selected rooms in the DOM
+ */
 function updateResults() {
     results.innerHTML = ""
     selectedRooms.forEach(room => {
@@ -74,7 +96,12 @@ function updateResults() {
     })
 }
 
+/**
+ * Update the selectedRooms array based on the selected houses
+ * then call updateResults
+ */
 function updateSelection() {
+    // update selectedHouses from the checkboxes
     selectedHouses = []
     checkboxes.forEach(checkbox => {
         if (!checkbox.checked) return
@@ -82,8 +109,9 @@ function updateSelection() {
         selectedHouses.push(house)
     })
 
-    selectedRooms = availableRooms.filter(room => selectedHouses.includes(room.house))
-
+    // update selectedRooms from the selectedHouses
+    selectedRooms = availableRooms.filter(room => selectedHouses.includes(room.house));
+    disableUnavailableSelections()
     updateResults()
 }
 
@@ -97,7 +125,7 @@ async function fetchBookingDocument() {
     const parser = new DOMParser()
     let objects = totalRooms.map(room => room.id).join(",")
     const url = `${BASE_URL}?part=t&sid=3&p=0.m%2C1.m&objects=${objects}`
-    console.log(url)
+    console.log((url))
     try {
         const response = await fetch(url)
         const timeEditDocument = parser.parseFromString(await response.text(), "text/html")
@@ -115,17 +143,9 @@ async function fetchBookingDocument() {
  */
 function getBookedRooms(timeEditDocument) {
     const booked = new Set();
-    let lokalColIndex;
-    timeEditDocument.querySelectorAll("tr").forEach(row => {
-        // header rows
-        if (!lokalColIndex) {
-            [...row.children].forEach((cell, index) => {
-                if (cell.textContent.trim() === "Lokal") {
-                    lokalColIndex = index
-                }
-            })
-            return
-        }
+    const columnHeaders = timeEditDocument.querySelector(".columnheaders")
+    const lokalColIndex = [...columnHeaders.children].findIndex(cell => cell.textContent.trim() === "Lokal")
+    timeEditDocument.querySelectorAll("tr.rr.clickable2").forEach(row => {
 
         const rooms = row.children[lokalColIndex].textContent.trim().split(" ");
 
@@ -140,10 +160,19 @@ function getBookedRooms(timeEditDocument) {
 
 // -- VISUAL FUNCTIONS --
 
+/**
+ * Make all checkboxes follow the all checkbox
+ */
 function toggleAllCheckbox() {
-    checkboxes.forEach(checkbox => checkbox.checked = all.checked)
+    checkboxes.forEach(checkbox => {
+        if (checkbox.disabled) return
+        checkbox.checked = all.checked
+    })
 }
 
+/**
+ * Make the all checkbox follow the checkboxes
+ */
 function visuallyUpdateAllCheckbox() {
     const checked = Array.from(checkboxes).filter(checkbox => checkbox.checked)
 

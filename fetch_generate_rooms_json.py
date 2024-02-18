@@ -4,10 +4,12 @@ import json
 HOUSES = ["A-huset", "B-huset", "C-huset", "D-huset", "E-huset",
           "Fysikhuset", "I-huset", "Key", "Studenthuset", "Tema-huset"]
 
+TYPES = ["Grupprum", "Platt%20sal"]
+
 rooms = []
 
 for house in HOUSES:
-    url = f"https://cloud.timeedit.net/liu/web/schema/objects.json?l=sv_SE&search_text=&types=195&sid=3&fe=11.Grupprum,26.{house}"
+    url = f"https://cloud.timeedit.net/liu/web/schema/objects.json?l=sv_SE&search_text=&types=195&sid=3&fe=11.{','.join(TYPES)}&fe=26.{house}"
     response = requests.get(url)
 
     # Check if the request was successful
