@@ -1,8 +1,8 @@
 import requests
 import json
 
-HOUSES = ["A-huset", "B-huset", "C-huset", "D-huset", "E-huset",
-          "Fysikhuset", "I-huset", "Key", "Studenthuset", "Tema-huset"]
+HOUSES = ["a-huset", "b-huset", "c-huset", "d-huset", "e-huset",
+          "fysikhuset", "i-huset%252c%25201%2520%2526%25202", "key", "studenthuset", "tema-huset"]
 
 TYPES = ["Grupprum", "Platt%20sal"]
 

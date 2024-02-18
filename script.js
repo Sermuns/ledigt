@@ -1,6 +1,26 @@
 let totalRooms, results, all, checkboxes, availableRooms, bookedRooms, selectedRooms, selectedHouses, loading
 window.onload = init
 
+/**
+ * Initialize variables and fetch the data
+ * Fetch the HTML response from TimeEdit and display the results
+ */
+async function init() {
+    results = document.getElementById("results")
+    all = document.querySelector("#hus-title input[type=checkbox]")
+    checkboxes = document.querySelectorAll("#hus-selection input[type=checkbox]")
+
+    showLoading()
+
+    totalRooms = await loadTotalRooms()
+    bookedRooms = getBookedRooms(await fetchBookingDocument())
+    availableRooms = totalRooms.filter(room => !bookedRooms.has(room.name));
+
+    hideLoading(loading);
+
+    updateSelection()
+}
+
 function showLoading() {
     checkboxes.forEach(checkbox => checkbox.disabled = true)
     all.disabled = true
@@ -37,26 +57,6 @@ function hideLoading() {
     all.disabled = false
 }
 
-/**
- * Initialize variables and fetch the data
- * Fetch the HTML response from TimeEdit and display the results
- */
-async function init() {
-    results = document.getElementById("results")
-    all = document.querySelector("#hus-title input[type=checkbox]")
-    checkboxes = document.querySelectorAll("#hus-selection input[type=checkbox]")
-
-    showLoading()
-
-    totalRooms = await loadTotalRooms()
-    bookedRooms = getBookedRooms(await fetchBookingDocument())
-    availableRooms = totalRooms.filter(room => !bookedRooms.has(room.name));
-
-    hideLoading(loading);
-
-    all.checked = true
-    all.click()
-}
 
 /**
  * Fetch the total rooms from the JSON file 
@@ -77,7 +77,7 @@ async function loadTotalRooms() {
  */
 function disableUnavailableSelections() {
     checkboxes.forEach(checkbox => {
-        const house = checkbox.parentElement.textContent.trim()
+        const house = checkbox.id
         const booked = !totalRooms.some(room => room.house === house && !bookedRooms.has(room.name))
         checkbox.disabled = booked
         checkbox.parentElement.classList = booked ? "unavailable" : "available"
@@ -105,7 +105,7 @@ function updateSelection() {
     selectedHouses = []
     checkboxes.forEach(checkbox => {
         if (!checkbox.checked) return
-        const house = checkbox.parentElement.textContent.trim()
+        const house = checkbox.id.trim()
         selectedHouses.push(house)
     })
 
@@ -122,10 +122,12 @@ function updateSelection() {
  */
 async function fetchBookingDocument() {
     const BASE_URL = "https://cloud.timeedit.net/liu/web/schema/ri.html"
+    const PERIOD = `0.m,1.m`.replace(/,/g, "%2C")
     const parser = new DOMParser()
-    let objects = totalRooms.map(room => room.id).join(",")
-    const url = `${BASE_URL}?part=t&sid=3&p=0.m%2C1.m&objects=${objects}`
+    const objects = totalRooms.map(room => room.id).join(",")
+    const url = `${BASE_URL}?part=t&sid=3&p=${PERIOD}&objects=${objects}`
     console.log((url))
+
     try {
         const response = await fetch(url)
         const timeEditDocument = parser.parseFromString(await response.text(), "text/html")
