@@ -1,9 +1,6 @@
 let totalRooms, results, all, checkboxes, availableRooms, bookedRooms, selectedRooms, selectedHouses, loading
 window.onload = init
 
-// for debugging
-//const debugNow = new Date(2024, 2, 1, 12, 12, 0, 0)
-
 /**
  * Initialize variables and fetch the data
  * Fetch the HTML response from TimeEdit and display the results
@@ -12,7 +9,8 @@ async function init() {
     results = document.getElementById("results")
     all = document.querySelector("#hus-title input[type=checkbox]")
     checkboxes = document.querySelectorAll("#hus-selection input[type=checkbox]")
-    startClock()
+
+    showClock()
 
     showLoading()
 
@@ -26,27 +24,13 @@ async function init() {
 }
 
 /**
- * Get the current time
- * if debugNow is set, use that time instead
+ * update the clock in the top right corner
  */
-function getNow(){
-    if (typeof debugNow !== 'undefined') return debugNow
-    return new Date()
-}
-
-function updateClock(clock){
-    clock.textContent = getNow().toLocaleTimeString('sv-SE')
-}
-
-function startClock() {
-    const topbar = document.getElementById("topbar")
+function showClock(){
     const clock = document.getElementById("clock")
-    clock.id = "clock"
-    topbar.appendChild(clock)
-    updateClock(clock)
-    setInterval(() => {
-        updateClock(clock)
-    }, 1000)
+    const now = new Date()
+    const options = { hour: '2-digit', minute: '2-digit' };
+    clock.textContent = now.toLocaleTimeString('sv-SE', options)
 }
 
 function showLoading() {
@@ -150,7 +134,7 @@ function updateSelection() {
  */
 async function fetchBookingDocument() {
     const BASE_URL = "https://cloud.timeedit.net/liu/web/schema/ri.html"
-    const PERIOD = `-5.h,10.m`.replace(/,/g, "%2C")
+    const PERIOD = `0.m,1.m`.replace(/,/g, "%2C")
     const parser = new DOMParser()
     const objects = totalRooms.map(room => room.id).join(",")
     const url = `${BASE_URL}?part=t&sid=3&p=${PERIOD}&objects=${objects}`

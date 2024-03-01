@@ -9,6 +9,7 @@
   --faded: rgb(29, 23, 23);
   --link-color: yellow;
   --error-color: purple;
+  --appwidth: 40rem;
 }
 
 @font-face {
@@ -50,6 +51,7 @@ p{
   flex-direction: column;
   padding: 0.5rem;
   overflow: hidden;
+  width: var(--appwidth);
 }
 
 .information,
@@ -93,26 +95,17 @@ a {
   color: var(--link-color);
 }
 
-h1 {
+h1, #clock{
   font-size: 1.5rem;
-  text-align: center;
-  color: var(--text-color);
-  text-decoration-color: var(--text-color);
 }
 
 #topbar {
   display: flex;
   justify-content: center;
+  gap: 2rem;
   align-items: center;
   position: relative;
 }
-
-#clock{
-  font-size: 1.5rem;
-  position: absolute;
-  right: 1rem;
-}
-
 
 .information {
   display: flex;
@@ -267,9 +260,15 @@ button {
   margin-bottom: 2rem;
 }
 
+/* unable to use variables in media queries...*/
+@media (max-width: 40rem) {
+  #app {
+    width: 100%;
+  }
+}
+
 /* Responsive styles */
 @media (max-width: 800px) {
-
   #results {
     grid-template-columns: repeat(2, auto);
   }
