@@ -1,4 +1,5 @@
-let totalRooms, results, all, checkboxes, availableRooms, bookedRooms, selectedRooms, selectedHouses, loading
+let totalRooms, results, all, checkboxes, availableRooms, selectedRooms, selectedHouses, loading
+
 window.onload = init
 
 /**
@@ -14,9 +15,9 @@ async function init() {
 
     showLoading()
 
-    totalRooms = await loadTotalRooms()
-    bookedRooms = getBookedRooms(await fetchBookingDocument())
-    availableRooms = totalRooms.filter(room => !bookedRooms.has(room.name));
+    const totalRooms = await loadTotalRooms() // load from local JSON file
+
+    availableRooms = await getAvailableRooms(totalRooms) // possibly fetch from TimeEdit
 
     hideLoading(loading);
 
@@ -24,9 +25,27 @@ async function init() {
 }
 
 /**
+ * Fetch the available rooms from TimeEdit
+ * If the data is cached, use the cached data
+ * @returns {Promise<Array>} The available rooms from TimeEdit
+ */
+async function getAvailableRooms(totalRooms) {
+    // try to use cache first
+    const cachedAvailableRooms = getCached();
+    if (cachedAvailableRooms) return cachedAvailableRooms;
+
+    // fetch from TimeEdit
+    const bookingDocument = await fetchBookingDocument(totalRooms);
+    const booked = getBookedRooms(bookingDocument);
+    const available = totalRooms.filter(room => !booked.has(room.name))
+    cache(available)
+    return available;
+}
+
+/**
  * update the clock in the top right corner
  */
-function showClock(){
+function showClock() {
     const clock = document.getElementById("clock")
     const now = new Date()
     const options = { hour: '2-digit', minute: '2-digit' };
@@ -86,11 +105,13 @@ async function loadTotalRooms() {
 
 /**
  * Enable or disable house selections based on availability
+ * if all rooms in house is booked, disable the checkbox
  */
-function disableUnavailableSelections() {
+function disableUnavailableCheckboxes() {
     checkboxes.forEach(checkbox => {
         const house = checkbox.id
-        const booked = !totalRooms.some(room => room.house === house && !bookedRooms.has(room.name))
+        // check if availablerooms contains a single room from the house
+        const booked = !availableRooms.some(room => room.house === house)
         checkbox.disabled = booked
         checkbox.parentElement.classList = booked ? "unavailable" : "available"
     })
@@ -123,16 +144,43 @@ function updateSelection() {
 
     // update selectedRooms from the selectedHouses
     selectedRooms = availableRooms.filter(room => selectedHouses.includes(room.house));
-    disableUnavailableSelections()
+    disableUnavailableCheckboxes()
     updateResults()
 }
 
+/**
+ * Return cached
+ * 1. it exists
+ * 2. it is not older than specified time
+ */
+function getCached() {
+    const TOO_OLD = 60000 // 1 minute
+
+    // anything cached?
+    const availableRooms = localStorage.getItem("availableRooms")
+    if (!availableRooms) return null
+
+    // too old?
+    const cacheTime = localStorage.getItem("cacheTime")
+    if (!cacheTime || Date.now() - cacheTime > TOO_OLD) return null
+
+    // Parse the JSON string back into an object
+    return JSON.parse(availableRooms)
+}
 
 /**
- * Fetch the HTML response from TimeEdit
+ * Store the booked rooms and the time of caching
+ */
+function cache(availableRooms) {
+    localStorage.setItem("availableRooms", JSON.stringify(availableRooms))
+    localStorage.setItem("cacheTime", Date.now())
+}
+
+/**
+ * Check localStorage for cached data, otherwise fetch the data from TimeEdit
  * @returns {Promise<Document>} The HTML response from TimeEdit
  */
-async function fetchBookingDocument() {
+async function fetchBookingDocument(totalRooms) {
     const BASE_URL = "https://cloud.timeedit.net/liu/web/schema/ri.html"
     const PERIOD = `0.m,1.m`.replace(/,/g, "%2C")
     const parser = new DOMParser()
@@ -160,11 +208,8 @@ function getBookedRooms(timeEditDocument) {
     const columnHeaders = timeEditDocument.querySelector(".columnheaders")
     const lokalColIndex = [...columnHeaders.children].findIndex(cell => cell.textContent.trim() === "Lokal")
     timeEditDocument.querySelectorAll("tr.rr.clickable2").forEach(row => {
-
         const rooms = row.children[lokalColIndex].textContent.trim().split(" ");
-
         if (rooms == "") return; // skip bookings without rooms
-
         rooms.forEach(room => booked.add(room));
     })
     return booked;
