@@ -39,6 +39,7 @@ body {
 }
 
 p{
+  margin: 0;
   text-align: center;
 }
 
@@ -95,17 +96,34 @@ a {
 h1 {
   font-size: 1.5rem;
   text-align: center;
-  margin-bottom: 0.5rem;
   color: var(--text-color);
   text-decoration-color: var(--text-color);
 }
 
+#topbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+#clock{
+  font-size: 1.5rem;
+  position: absolute;
+  right: 1rem;
+}
+
+
 .information {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   text-align: center;
   border: var(--tertiary-color) 1px solid;
   margin: 0;
   padding: 1rem;
 }
+
 
 input {
   margin: 0;

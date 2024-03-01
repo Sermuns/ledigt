@@ -43,10 +43,15 @@
 
   <body>
     <div id="app">
-      <a href=".">
-        <h1>Ledigt</h1>
-      </a>
-      <p class="information">Lokaler som är lediga just nu på Campus Valla</p>
+      <div id="topbar">
+        <a href=".">
+          <h1>Ledigt</h1>
+        </a>
+        <p id="clock"></p>
+      </div>
+      <div class="information">
+        <p>Lokaler som är lediga just nu på Campus Valla</p>
+      </div>
       <form action="#" onchange="updateSelection()">
         <div id="hus-title">
           <label style="gap: 1rem">
